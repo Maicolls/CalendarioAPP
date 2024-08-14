@@ -1,118 +1,104 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
+import { StatusBar } from 'expo-status-bar';
+import React, { useState } from "react";
+import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import DatePicker from 'react-native-modern-datepicker';
 
-import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+// ...
+import { getFormatedDate } from 'react-native-modern-datepicker';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
-
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+const Header = ({ title = 'Default Title' }) => {
   return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
+    <View>
+      <Text>{title}</Text>
+    </View>
+  );
+};
+
+export default function App() {
+  const today = new Date();
+  const startDate = getFormatedDate(new Date(today.setDate(today.getDate() + 1)), 'yyyy-MM-dd');
+
+  const [open, setOpen] = useState(false); // open and closes the modal
+  const [date, setDate] = useState('12/12/2024'); // date variable
+
+  function handleOnPress() {
+    setOpen(!open);
+  }
+
+  function handleChange(propDate: string) {
+    setDate(propDate);
+    setOpen(!open);
+  }
+
+  return (
+    <View style={styles.container}>
+      <Header title="Calendario" />
+      <Text>Open: {open.toString()}</Text>
+
+      <TouchableOpacity onPress={handleOnPress} style={styles.button}>
+        <Text>Open Modal</Text>
+      </TouchableOpacity>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={open}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <DatePicker
+              mode="calendar"
+              minimumDate={startDate}
+              selected={date}
+              onDateChange={handleChange}
+            />
+
+            <TouchableOpacity onPress={handleOnPress} style={styles.button}>
+              <Text>Close Modal</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      <StatusBar style="auto" />
     </View>
   );
 }
 
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
-  return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
-}
-
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
   },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    width: '90%',
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
-  highlight: {
-    fontWeight: '700',
+  button: {
+    backgroundColor: '#2196F3',
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 10,
   },
+ 
 });
-
-export default App;

@@ -1,0 +1,3 @@
+npm install expo-status-bar
+npm install react-native-modern-datepicker
+npm i --save-dev @types/react-native-modern-datepicker
